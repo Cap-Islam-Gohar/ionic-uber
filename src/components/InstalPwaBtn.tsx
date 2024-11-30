@@ -2,34 +2,71 @@ import { IonAlert, IonButton, IonIcon, useIonAlert } from '@ionic/react';
 import { cloudDownloadOutline, cloudDownloadSharp, download } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react'
 
-const InstallPwaBtn = () => {
-    const [presentAlert] = useIonAlert();
-    const [supportsPWA, setSupportsPWA] = useState(false);
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
 
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+let deferredPrompt;
+
+
+
+const InstallPwaBtn = () => {
+
+    const [isIOS, setIsIOS] = useState(/iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream);
+    const [isStandalone, setIsStandalone] = useState(window.matchMedia('(display-mode: standalone)').matches);
+
+    const [presentAlert] = useIonAlert();
+    const [installable, setInstallable] = useState(false);
+
 
     useEffect(() => {
 
-        const handler = (e) => {
+        const handlePrompt = (e) => {
+            // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
-            setSupportsPWA(true);
-            setDeferredPrompt(e);
-            return false;
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI notify the user they can install the PWA
+            setInstallable(true);
         }
 
-        window.addEventListener("beforeinstallprompt", handler);
+        window.addEventListener('beforeinstallprompt', handlePrompt)
+        window.addEventListener('appinstalled', (e) => {
+            // Log install to analytics
+            console.log('INSTALL: Success');    
+        });
 
-        return () => window.removeEventListener("transitionend", handler);
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handlePrompt)
+            window.removeEventListener('appinstalled', handlePrompt)
+        }
 
-    }, [deferredPrompt])
+    }, [])
 
 
-    const iosMsg = `To install this app on your iOS device, tap the share button 
-        <span role='img' aria-label='share icon'> {' '} ⎋{' '} </span> and then "Add to Home Screen" <span role='img' aria-label='plus icon'>{' '}➕{' '}</span>.</p>`;
 
-    const install = (event) => {
+    // const iosMsg = `To install this app on your iOS device, tap the share button <span role='img' aria-label='share icon'> {' '} ⎋{' '} </span> and then "Add to Home Screen" <span role='img' aria-label='plus icon'>{' '}➕{' '}</span>.</p>`;
+    const iosMsg = `Just tab 
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="800px" height="800px" viewBox="0 0 50 50"><path d="M30.3 13.7L25 8.4l-5.3 5.3-1.4-1.4L25 5.6l6.7 6.7z"/><path d="M24 7h2v21h-2z"/><path d="M35 40H15c-1.7 0-3-1.3-3-3V19c0-1.7 1.3-3 3-3h7v2h-7c-.6 0-1 .4-1 1v18c0 .6.4 1 1 1h20c.6 0 1-.4 1-1V19c0-.6-.4-1-1-1h-7v-2h7c1.7 0 3 1.3 3 3v18c0 1.7-1.3 3-3 3z"/></svg>
+                then "Add to Home Screen"`
+
+
+    const handleInstallClick = (e) => {
+        
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+                setIsStandalone(true);
+            } else {
+                console.log('User dismissed the install prompt');
+                // Hide the app provided install promotion
+                setInstallable(false); 
+            }
+        });
+    };
+
+
+    const onClick = (event) => {
         if (isIOS) {
             presentAlert({
                 header: 'Istall App',
@@ -37,69 +74,13 @@ const InstallPwaBtn = () => {
                 buttons: [{
                     text: 'Cancel',
                     role: 'cancel',
-                },{
+                }, {
                     text: 'I undrstood',
                     role: 'confirm',
                 }],
             })
         } else {
-            if (deferredPrompt !== undefined) {
-                deferredPrompt.prompt();
-            }
-            // Follow what the user has done with the prompt.
-            deferredPrompt.userChoice.then(function (choiceResult) {
-
-                console.log(choiceResult.outcome);
-
-                if (choiceResult.outcome == 'dismissed') {
-                    console.log('User cancelled home screen install');
-                }
-                else {
-                    console.log('User added to home screen');
-                }
-
-                // We no longer need the prompt.  Clear it up.
-                setDeferredPrompt(null)
-            });
-            // presentAlert({
-            //     header: 'Istall App',
-            //     message: "Add to home screen",
-            //     buttons: [{
-            //         text: 'Cancel',
-            //         role: 'cancel',
-            //         handler: () => {
-            //             console.log('Alert canceled');
-            //         },
-            //     },
-            //     {
-            //         text: 'Add to Home Screen',
-            //         role: 'confirm',
-            //         handler: () => {
-            //             // The user has had a postive interaction with our app and Chrome
-            //             // has tried to prompt previously, so let's show the prompt.
-
-            //             if (deferredPrompt !== undefined) {
-            //                 deferredPrompt.prompt();
-            //             }
-            //             // Follow what the user has done with the prompt.
-            //             deferredPrompt.userChoice.then(function (choiceResult) {
-
-            //                 console.log(choiceResult.outcome);
-
-            //                 if (choiceResult.outcome == 'dismissed') {
-            //                     console.log('User cancelled home screen install');
-            //                 }
-            //                 else {
-            //                     console.log('User added to home screen');
-            //                 }
-
-            //                 // We no longer need the prompt.  Clear it up.
-            //                 setDeferredPrompt(null)
-            //             });
-
-            //         },
-            //     }]
-            // })
+            handleInstallClick(event)
         }
 
 
@@ -109,8 +90,8 @@ const InstallPwaBtn = () => {
         return null // Don't show install button if already installed
     }
 
-    return <IonButton slot='end'  fill="clear" onClick={install}>
-        <IonIcon icon={cloudDownloadOutline} />
+    return <IonButton slot='end' fill='clear' style={{paddingRight: 4}} onClick={onClick}>
+         Install
     </IonButton>
 }
 

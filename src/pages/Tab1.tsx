@@ -9,7 +9,7 @@ const Tab1: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Tab 1</IonTitle>
-          {/* <InstallPwaBtn></InstallPwaBtn> */}
+          <InstallPwaBtn></InstallPwaBtn>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>

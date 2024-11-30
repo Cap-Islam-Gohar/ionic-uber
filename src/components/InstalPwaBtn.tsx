@@ -1,62 +1,97 @@
+import { IonAlert, IonButton, IonIcon, useIonAlert } from '@ionic/react';
+import { cloudDownloadOutline, cloudDownloadSharp, download } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react'
 
 const InstallPwaBtn = () => {
-    const [isStandalone, setIsStandalone] = useState(false)
-    const [isIOS, setIsIOS] = useState(false)
-    const [promptInstall, setPromptInstall] = useState(null);
+    const [presentAlert] = useIonAlert();
+    const [supportsPWA, setSupportsPWA] = useState(false);
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
     useEffect(() => {
-        setIsIOS(
-            /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
-        )
-
-        setIsStandalone(window.matchMedia('(display-mode: standalone)').matches)
 
         const handler = (e) => {
             e.preventDefault();
-            console.log("we are being triggered :D");
-            setPromptInstall(e);
+            setSupportsPWA(true);
+            setDeferredPrompt(e);
+            return false;
         }
 
         window.addEventListener("beforeinstallprompt", handler);
 
         return () => window.removeEventListener("transitionend", handler);
 
-    }, [])
+    }, [deferredPrompt])
+
+
+    const iosMsg = `To install this app on your iOS device, tap the share button 
+        <span role='img' aria-label='share icon'> {' '} ⎋{' '} </span> and then "Add to Home Screen" <span role='img' aria-label='plus icon'>{' '}➕{' '}</span>.</p>`;
 
     const install = (event) => {
-        event.preventDefault();
-        if (!promptInstall) {
-            return;
+        if (isIOS) {
+            presentAlert({
+                header: 'Istall App',
+                message: iosMsg,
+                buttons: [{
+                    text: 'Cancel',
+                    role: 'cancel',
+                },{
+                    text: 'I undrstood',
+                    role: 'confirm',
+                }],
+            })
+        } else {
+            presentAlert({
+                header: 'Istall App',
+                message: "Add to home screen",
+                buttons: [{
+                    text: 'Cancel',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('Alert canceled');
+                    },
+                },
+                {
+                    text: 'Add to Home Screen',
+                    role: 'confirm',
+                    handler: () => {
+                        // The user has had a postive interaction with our app and Chrome
+                        // has tried to prompt previously, so let's show the prompt.
+
+                        if (deferredPrompt !== undefined) {
+                            deferredPrompt.prompt();
+                        }
+                        // Follow what the user has done with the prompt.
+                        deferredPrompt.userChoice.then(function (choiceResult) {
+
+                            console.log(choiceResult.outcome);
+
+                            if (choiceResult.outcome == 'dismissed') {
+                                console.log('User cancelled home screen install');
+                            }
+                            else {
+                                console.log('User added to home screen');
+                            }
+
+                            // We no longer need the prompt.  Clear it up.
+                            setDeferredPrompt(null)
+                        });
+
+                    },
+                }]
+            })
         }
-        promptInstall.prompt();
+
+
     }
 
     if (isStandalone) {
         return null // Don't show install button if already installed
     }
 
-    return (<>
-        <div>
-            <h3>Install App</h3>
-            <button onClick={install}>Add to Home Screen</button>
-            {/* {isIOS && ( */}
-            <p>
-                To install this app on your iOS device, tap the share button
-                <span role='img' aria-label='share icon'>
-                    {' '}
-                    ⎋{' '}
-                </span>
-                and then "Add to Home Screen"
-                <span role='img' aria-label='plus icon'>
-                    {' '}
-                    ➕{' '}
-                </span>
-                .
-            </p>
-            {/* )} */}
-        </div>
-    </>)
+    return <IonIcon onClick={install} icon={cloudDownloadOutline} />
 }
 
 export default InstallPwaBtn

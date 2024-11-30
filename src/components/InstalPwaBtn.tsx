@@ -43,45 +43,63 @@ const InstallPwaBtn = () => {
                 }],
             })
         } else {
-            presentAlert({
-                header: 'Istall App',
-                message: "Add to home screen",
-                buttons: [{
-                    text: 'Cancel',
-                    role: 'cancel',
-                    handler: () => {
-                        console.log('Alert canceled');
-                    },
-                },
-                {
-                    text: 'Add to Home Screen',
-                    role: 'confirm',
-                    handler: () => {
-                        // The user has had a postive interaction with our app and Chrome
-                        // has tried to prompt previously, so let's show the prompt.
+            if (deferredPrompt !== undefined) {
+                deferredPrompt.prompt();
+            }
+            // Follow what the user has done with the prompt.
+            deferredPrompt.userChoice.then(function (choiceResult) {
 
-                        if (deferredPrompt !== undefined) {
-                            deferredPrompt.prompt();
-                        }
-                        // Follow what the user has done with the prompt.
-                        deferredPrompt.userChoice.then(function (choiceResult) {
+                console.log(choiceResult.outcome);
 
-                            console.log(choiceResult.outcome);
+                if (choiceResult.outcome == 'dismissed') {
+                    console.log('User cancelled home screen install');
+                }
+                else {
+                    console.log('User added to home screen');
+                }
 
-                            if (choiceResult.outcome == 'dismissed') {
-                                console.log('User cancelled home screen install');
-                            }
-                            else {
-                                console.log('User added to home screen');
-                            }
+                // We no longer need the prompt.  Clear it up.
+                setDeferredPrompt(null)
+            });
+            // presentAlert({
+            //     header: 'Istall App',
+            //     message: "Add to home screen",
+            //     buttons: [{
+            //         text: 'Cancel',
+            //         role: 'cancel',
+            //         handler: () => {
+            //             console.log('Alert canceled');
+            //         },
+            //     },
+            //     {
+            //         text: 'Add to Home Screen',
+            //         role: 'confirm',
+            //         handler: () => {
+            //             // The user has had a postive interaction with our app and Chrome
+            //             // has tried to prompt previously, so let's show the prompt.
 
-                            // We no longer need the prompt.  Clear it up.
-                            setDeferredPrompt(null)
-                        });
+            //             if (deferredPrompt !== undefined) {
+            //                 deferredPrompt.prompt();
+            //             }
+            //             // Follow what the user has done with the prompt.
+            //             deferredPrompt.userChoice.then(function (choiceResult) {
 
-                    },
-                }]
-            })
+            //                 console.log(choiceResult.outcome);
+
+            //                 if (choiceResult.outcome == 'dismissed') {
+            //                     console.log('User cancelled home screen install');
+            //                 }
+            //                 else {
+            //                     console.log('User added to home screen');
+            //                 }
+
+            //                 // We no longer need the prompt.  Clear it up.
+            //                 setDeferredPrompt(null)
+            //             });
+
+            //         },
+            //     }]
+            // })
         }
 
 
@@ -91,7 +109,9 @@ const InstallPwaBtn = () => {
         return null // Don't show install button if already installed
     }
 
-    return <IonIcon onClick={install} icon={cloudDownloadOutline} />
+    return <IonButton slot='end'  fill="clear" onClick={install}>
+        <IonIcon icon={cloudDownloadOutline} />
+    </IonButton>
 }
 
 export default InstallPwaBtn

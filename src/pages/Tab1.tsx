@@ -9,15 +9,17 @@ const Tab1: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Tab 1</IonTitle>
+          <InstallPwaBtn></InstallPwaBtn>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Tab 1</IonTitle>
+            
           </IonToolbar>
         </IonHeader>
-        <InstallPwaBtn></InstallPwaBtn>
+        
         <ExploreContainer name="Tab 1 page" />
       </IonContent>
     </IonPage>

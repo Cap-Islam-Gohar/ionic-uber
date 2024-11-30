@@ -10,7 +10,14 @@ export default defineConfig({
     plugins: [
         react(),
         legacy(),
-        VitePWA({registerType: 'autoUpdate'})
+        VitePWA({
+            registerType: 'autoUpdate',
+            injectRegister: null,
+            workbox: {
+                cleanupOutdatedCaches: false
+            },
+            minify: false,
+        })
     ],
     test: {
         globals: true,

@@ -14,6 +14,7 @@ export default defineConfig({
             registerType: 'autoUpdate',
             injectRegister: null,
             workbox: {
+                maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Set the limit to 5 MB
                 cleanupOutdatedCaches: false
             },
             minify: false,

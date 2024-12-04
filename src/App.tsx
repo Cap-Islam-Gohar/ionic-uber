@@ -1,12 +1,8 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import {
-  IonApp,
-  IonLabel,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  setupIonicReact
+    IonApp,
+    IonRouterOutlet,
+    setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
@@ -40,50 +36,36 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import Home from './pages/Main/Home';
-import Services from './pages/Main/Services';
-import Activity from './pages/Main/Activity';
-import Account from './pages/Main/Account';
-import Go from './pages/Go/Go';
+import { MapProvider } from 'react-map-gl';
+import Tabs from './pages/Tabs';
+import RideLayout from './pages/RideLayout ';
+import NotFound from './pages/NotFound';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-            <IonTabs>
-                <IonRouterOutlet>
-                    <Redirect path="/" to={"/home"} exact />
-                    <Route path="/home" render={() => <Home />} exact />
-                    <Route path="/services" render={() => <Services />} exact />
-                    <Route path="/activity" render={() => <Activity />} exact />
-                    <Route path="/account" render={() => <Account />} exact />
-                    <Route path="/go" render={() => <Go />}/>
-                    <Route component={() => (<>
-                        <div className='flex justify-center items-center text-center h-full w-full'>
-                            <h1 className='text-red-500'>404, Not Found</h1>
-                        </div>
-                    </>)} />
 
+const App = () => (
 
-                </IonRouterOutlet>
-                <IonTabBar slot="bottom">
-                    <IonTabButton tab="home" href="/home">
-                        <IonLabel>Home</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="services" href="/services">
-                        <IonLabel>Services</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="activity" href="/activity">
-                        <IonLabel>Activity</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="account" href="/account">
-                        <IonLabel>Account</IonLabel>
-                    </IonTabButton>
-                </IonTabBar>
-            </IonTabs>
+    <IonApp>
+        <IonReactRouter>
+            <IonRouterOutlet>
+                {/* Routes with tabs */}
+                <Route path={['/', '/home', '/activity', '/account']} render={() => <Tabs />} exact />
+
+                {/* Routes without tabs */}
+                <Route path={['/ride', '/ride/home', '/ride/pickup', '/ride/dropoff']} render={ () => (<>
+                    <MapProvider>
+                        <RideLayout />
+                    </MapProvider>
+                </>)} />
+
+                {/* Not Found Route */}
+                <Route component={NotFound} />
+            </IonRouterOutlet>
         </IonReactRouter>
-  </IonApp>
+    </IonApp>
+
+
 );
 
 export default App;

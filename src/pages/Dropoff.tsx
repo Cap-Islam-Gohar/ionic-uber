@@ -42,7 +42,7 @@ const Dropoff = () => {
 
     useEffect(() => {
         const focusInputTimer = setTimeout(() => {
-            inputRef.current?.setFocus();
+            inputRef?.current?.setFocus();
         }, 1);
 
         return () => clearTimeout(focusInputTimer)
@@ -56,7 +56,6 @@ const Dropoff = () => {
             <IonSearchbar onClick={() => history.replace('/ride/pickup')} value={origin?.full_address} placeholder="Pickup location" searchIcon={ellipse}></IonSearchbar>
 
             <IonSearchbar
-                setFocus={true}
                 placeholder="Dropoff destination"
                 searchIcon={stop}
                 debounce={300}

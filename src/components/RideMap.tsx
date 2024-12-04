@@ -34,7 +34,7 @@ const RideMap = () => {
         { skip: !isReady }
     );
 
-    const { data: revers, errorRevers, isLoadingRevers } = useGetLocationNameQuery(current, {
+    const { data: revers, errorRevers, isLoadingRevers } = useGetLocationNameQuery(currentLocation, {
         skip: !currentLocation.latitude && !currentLocation.longitude,
     });
 
@@ -69,9 +69,11 @@ const RideMap = () => {
     const handleDragEnd = (event) => {
         const center = map.getCenter();
         setViewState({
-            ...viewState,
             latitude: center.lat,
             longitude: center.lng,
+            zoom: 14,
+            maxZoom: 18,
+            minZoom: 5,
         });
         setCurrentLocation(true);
 
@@ -166,12 +168,12 @@ const RideMap = () => {
 
                 <Marker latitude={viewState.latitude} longitude={viewState.longitude}>
                     <IonIcon size='large' style={{
-                            // background: "red",
-                            height: "20px",
-                            width: "20px",
-                            borderRadius: "50%",
-                            transform: "translate(-50%, -50%)",
-                        }} icon={pin} />
+                        // background: "red",
+                        height: "20px",
+                        width: "20px",
+                        borderRadius: "50%",
+                        transform: "translate(-50%, -50%)",
+                    }} icon={pin} />
                 </Marker>
 
                 {origin && <Marker longitude={origin.coordinates.longitude} latitude={origin.coordinates.latitude}>

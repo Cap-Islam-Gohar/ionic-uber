@@ -18,7 +18,7 @@ const RideScreen = () => {
             e.target.blur()
             history.replace('/ride/pickup')
         }} value={origin?.full_address} placeholder="Pickup location" searchIcon={ellipse}></IonSearchbar>
-        <IonSearchbar value={destination?.full_address} onfo={() => history.replace('/ride/dropoff')} placeholder="Dropoff destination" searchIcon={stop}></IonSearchbar>
+        <IonSearchbar value={destination?.full_address} onClick={() => history.replace('/ride/dropoff')} placeholder="Dropoff destination" searchIcon={stop}></IonSearchbar>
     </>)
 
 }

@@ -7,8 +7,6 @@ import RideMap from '../components/RideMap';
 import { MapProvider } from 'react-map-gl';
 import Pickup from './Pickup';
 import Dropoff from './Dropoff';
-import DropoffInput from '../components/DropoffInput';
-import PickupInput from '../components/PickupInput';
 
 const RideLayout = () => {
 

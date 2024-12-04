@@ -39,7 +39,7 @@ export const mapboxApi = createApi({
                     language: 'en,ar',
                 },
             }),
-            transformResponse: (response) => response.routes[0], // Transform to return the first route
+            transformResponse: (response) => response?.routes[0], // Transform to return the first route
         }),
         getLocationName: builder.query({
             query: ({ longitude, latitude }) => ({

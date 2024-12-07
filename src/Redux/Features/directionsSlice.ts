@@ -1,5 +1,5 @@
 // src/slices/directionsSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 
 const initialState = {
@@ -8,7 +8,7 @@ const initialState = {
     destination: null,
     directions: null,
     status: 'idle',
-    error: null,
+    error: null
 };
 
 const directionsSlice = createSlice({

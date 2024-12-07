@@ -58,6 +58,7 @@ export const mapboxApi = createApi({
     }),
 });
 
+
 // Export hooks for usage in components
 export const { useSearchPlacesQuery, useGetDirectionQuery, useGetLocationNameQuery } = mapboxApi;
 

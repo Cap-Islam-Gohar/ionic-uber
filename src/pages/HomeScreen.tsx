@@ -1,12 +1,12 @@
 import React from 'react';
 import { IonTabs, IonTabBar, IonTabButton, IonLabel, IonIcon, IonRouterOutlet } from '@ionic/react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import HomeTab from './HomeTab';
-import ActivityTab from './ActivityTab';
-import AccountTab from './AccountTab';
+import HomeTab from './taps/HomeTab';
+import ActivityTab from './taps/ActivityTab';
+import AccountTab from './taps/AccountTab';
 import { homeOutline, calendarOutline, personOutline } from 'ionicons/icons';
 
-const Tabs = () => (
+const HomeScreen = () => (
     <IonTabs>
         <IonRouterOutlet>
             <Route exact path="/home" component={HomeTab} />
@@ -32,4 +32,4 @@ const Tabs = () => (
     </IonTabs>
 );
 
-export default Tabs;
+export default HomeScreen;

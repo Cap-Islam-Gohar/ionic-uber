@@ -76,48 +76,33 @@ const RideMap = ({ children }) => {
     }, [directions])
 
     return (
+        <div>
+            <Map
+                {...viewState}
+                mapboxAccessToken={TOKEN}
+                style={{ position: "absolute", width: "100%", height: "100%" }}
+                mapStyle="mapbox://styles/mapbox/streets-v12"
+                ref={mapRef}
+                maxZoom={18}
+                minZoom={5}
+                onMove={(evt) => setViewState(evt.viewState)}
+            >
+                {/* Centered marker */}
+                {/* {!directions && <Marker ref={markerRef} latitude={viewState.latitude} longitude={viewState.longitude} style={{ zIndex: 9999 }}>
+                    <AnimatedPin animatePin={animatePin} />
+                </Marker>} */}
 
-        <Map
-            mapboxAccessToken={TOKEN}
-            mapStyle="mapbox://styles/mapbox/streets-v12"
-            initialViewState={{
-                latitude: 30,
-                longitude: 31,
-                zoom: 10,
-            }}
-            style={{ width: "100%", height: "100%" }}
-        >
+                {!directions && !origin && <PickupPin viewState={viewState} />}
+                {!directions && !destination && <DropoffPin viewState={viewState} />}
 
-            {!directions && <CurrentLocationBtn />}
+                {!directions && <CurrentLocationBtn />}
 
-        </Map>
-        // <div>
-        //     <Map
-        //         {...viewState}
-        //         mapboxAccessToken={TOKEN}
-        //         style={{ position: "absolute", width: "100%", height: "100%" }}
-        //         mapStyle="mapbox://styles/mapbox/streets-v12"
-        //         ref={mapRef}
-        //         maxZoom={18}
-        //         minZoom={5}
-        //         onMove={(evt) => setViewState(evt.viewState)}
-        //     >
-        //         {/* Centered marker */}
-        //         {/* {!directions && <Marker ref={markerRef} latitude={viewState.latitude} longitude={viewState.longitude} style={{ zIndex: 9999 }}>
-        //             <AnimatedPin animatePin={animatePin} />
-        //         </Marker>} */}
+                <DirectionsLayer />
 
-        //         {!directions && !origin && <PickupPin viewState={viewState} />}
-        //         {!directions && !destination && <DropoffPin viewState={viewState} />}
+            </Map>
 
-        //         {!directions && <CurrentLocationBtn />}
-
-        //         <DirectionsLayer />
-
-        //     </Map>
-
-        //     {children}
-        // </div>
+            {children}
+        </div>
     );
 };
 

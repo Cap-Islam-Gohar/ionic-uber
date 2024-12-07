@@ -30,18 +30,21 @@ import '@ionic/react/css/display.css';
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* import '@ionic/react/css/palettes/dark.always.css'; */
+// import '@ionic/react/css/palettes/dark.always.css';
 /* import '@ionic/react/css/palettes/dark.class.css'; */
-import '@ionic/react/css/palettes/dark.system.css';
+// import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import { MapProvider } from 'react-map-gl';
-import Tabs from './pages/Tabs';
-import RideLayout from './pages/RideLayout ';
+import './theme/tailwind.css';
 import NotFound from './pages/NotFound';
+import HomeScreen from './pages/HomeScreen';
+import RideScreen from './pages/RideScreen';
+import { MapProvider } from 'react-map-gl';
 
-setupIonicReact();
+setupIonicReact({
+    mode: "ios"
+});
 
 
 const App = () => (
@@ -50,20 +53,30 @@ const App = () => (
         <IonReactRouter>
             <IonRouterOutlet>
                 {/* Routes with tabs */}
-                <Route path={['/', '/home', '/activity', '/account']} render={() => <Tabs />} exact />
+                <Route path={['/', '/home', '/activity', '/account']} render={() => <HomeScreen />} exact />
 
                 {/* Routes without tabs */}
-                <Route path={['/ride', '/ride/home', '/ride/pickup', '/ride/dropoff']} render={ () => (<>
-                    <MapProvider>
-                        <RideLayout />
-                    </MapProvider>
-                </>)} />
+                <Route
+                    exact 
+                    path={[
+                        '/ride', 
+                        '/ride/home', 
+                        '/ride/pickup', 
+                        '/ride/dropoff', 
+                        '/ride/pickup/set-pin', 
+                        '/ride/dropoff/set-pin', 
+                        '/ride/select'
+                    ]} 
+                    render={() => <MapProvider>
+                        <RideScreen />
+                    </MapProvider>} />
 
                 {/* Not Found Route */}
                 <Route component={NotFound} />
             </IonRouterOutlet>
         </IonReactRouter>
     </IonApp>
+
 
 
 );

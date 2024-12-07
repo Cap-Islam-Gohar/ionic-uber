@@ -64,6 +64,8 @@ const RideScreen = () => {
     return (<>
         <IonPage>
             <IonContent scrollY={false} fullscreen>
+            <div className=" absolute top-0 left-0 right-0 bottom-0">
+            <div className="h-screen w-full">
             <Map
                 mapboxAccessToken={TOKEN}
                 ref={mapRef}
@@ -111,6 +113,8 @@ const RideScreen = () => {
 
 
             </Map>
+            </div>
+            </div>
 
             </IonContent>
         </IonPage >

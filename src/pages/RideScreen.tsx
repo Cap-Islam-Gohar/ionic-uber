@@ -63,60 +63,60 @@ const RideScreen = () => {
 
     return (<>
         <IonPage>
-            <IonContent scrollY={false} fullscreen>
-            <div className=" absolute top-0 left-0 right-0 bottom-0">
-            <div className="h-screen w-full">
-            <Map
-                mapboxAccessToken={TOKEN}
-                ref={mapRef}
-                mapStyle="mapbox://styles/mapbox/dark-v11"
-                style={{ width: "100%", height: "100%" }}
-                onMove={(evt) => setViewState(evt.viewState)}
-                {...viewState}
-                maxZoom={18}
-                minZoom={5}
-            >
-                <IonModal
-                    ref={modalRef}
-                    isOpen={true}
-                    {...modalbreakpoints}
-                    animated={false}
-                    canDismiss={false}
-                    onDidDismiss={() => history.replace('/ride/home')}
-                    onIonBreakpointDidChange={(e) => {
-                        const isSmall = e.detail.breakpoint === 0.2 ? true : false
+            {/* <IonContent> */}
+                {/* <div className=" absolute top-0 left-0 right-0 bottom-0"> */}
+                    {/* <div className="h-screen w-full"> */}
+                        <Map
+                            mapboxAccessToken={TOKEN}
+                            ref={mapRef}
+                            mapStyle="mapbox://styles/mapbox/dark-v11"
+                            style={{ width: "100%", height: "100%" }}
+                            onMove={(evt) => setViewState(evt.viewState)}
+                            {...viewState}
+                            maxZoom={18}
+                            minZoom={5}
+                        >
+                            <IonModal
+                                ref={modalRef}
+                                isOpen={true}
+                                {...modalbreakpoints}
+                                animated={false}
+                                canDismiss={false}
+                                onDidDismiss={() => history.replace('/ride/home')}
+                                onIonBreakpointDidChange={(e) => {
+                                    const isSmall = e.detail.breakpoint === 0.2 ? true : false
 
-                        !isSmall && pages.setPickupPin && history.replace('/ride/pickup')
-                        !isSmall && pages.setDropoffPin && history.replace('/ride/dropoff')
+                                    !isSmall && pages.setPickupPin && history.replace('/ride/pickup')
+                                    !isSmall && pages.setDropoffPin && history.replace('/ride/dropoff')
 
-                        isSmall && (pages.pickup || pages.home) && history.replace('/ride/pickup/set-pin')
-                        isSmall && pages.dropoff && history.replace('/ride/dropoff/set-pin')
-                        
-                    }}
-                >
-                    <IonContent scrollY={false} fullscreen color="light" className="ion-padding">
+                                    isSmall && (pages.pickup || pages.home) && history.replace('/ride/pickup/set-pin')
+                                    isSmall && pages.dropoff && history.replace('/ride/dropoff/set-pin')
 
-                        <CurrentLocationBtn />
+                                }}
+                            >
+                                <IonContent scrollY={false} fullscreen color="light" className="ion-padding">
 
-                        <DirectionsLayer />
+                                    <CurrentLocationBtn />
 
-
-                        <Route exact path="/ride/home" render={() => <Home />} />
-                        <Route exact path="/ride/pickup" render={() => <Pickup />} />
-                        <Route exact path="/ride/dropoff" render={() => <Dropoff />} />
-                        <Route exact path="/ride/pickup/set-pin" render={() => <SetPickupPin mapRef={mapRef} viewState={viewState} />} />
-                        <Route exact path="/ride/dropoff/set-pin" render={() => <SetDropoffPin mapRef={mapRef} viewState={viewState} />} />
-                        <Route exact path="/ride" render={() => <Redirect to="/ride/home" />} />
-                    </IonContent>
-
-                </IonModal>
+                                    <DirectionsLayer />
 
 
-            </Map>
-            </div>
-            </div>
+                                    <Route exact path="/ride/home" render={() => <Home />} />
+                                    <Route exact path="/ride/pickup" render={() => <Pickup />} />
+                                    <Route exact path="/ride/dropoff" render={() => <Dropoff />} />
+                                    <Route exact path="/ride/pickup/set-pin" render={() => <SetPickupPin mapRef={mapRef} viewState={viewState} />} />
+                                    <Route exact path="/ride/dropoff/set-pin" render={() => <SetDropoffPin mapRef={mapRef} viewState={viewState} />} />
+                                    <Route exact path="/ride" render={() => <Redirect to="/ride/home" />} />
+                                </IonContent>
 
-            </IonContent>
+                            </IonModal>
+
+
+                        </Map>
+                    {/* </div> */}
+                {/* </div> */}
+
+            {/* </IonContent> */}
         </IonPage >
     </>)
 }

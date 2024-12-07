@@ -89,7 +89,8 @@ const RideScreen = () => {
                                     !isSmall && pages.setPickupPin && history.replace('/ride/pickup')
                                     !isSmall && pages.setDropoffPin && history.replace('/ride/dropoff')
 
-                                    isSmall && (pages.pickup || pages.home) && history.replace('/ride/pickup/set-pin')
+                                    isSmall && (pages.pickup || pages.home) && !origin && history.replace('/ride/pickup/set-pin')
+                                    isSmall && (pages.pickup || pages.home) && origin && history.replace('/ride/dropoff/set-pin')
                                     isSmall && pages.dropoff && history.replace('/ride/dropoff/set-pin')
 
                                 }}

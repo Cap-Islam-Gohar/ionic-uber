@@ -4,7 +4,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { useGetLocationNameQuery } from "../Redux/Api/mapboxApi";
 import { IonIcon } from "@ionic/react";
 import { locateSharp } from "ionicons/icons";
-import { setCurrent } from "../Redux/Features/directionsSlice";
+import { setCurrent, setOrigin } from "../Redux/Features/directionsSlice";
 import { useDispatch } from "react-redux";
 
 const CurrentLocationBtn = () => {
@@ -19,7 +19,10 @@ const CurrentLocationBtn = () => {
     });
 
     useEffect(() => {
-        locName && dispatch(setCurrent(locName.properties))
+        if(locName ) {
+            dispatch(setCurrent(locName.properties))
+            dispatch(setOrigin(locName.properties))
+        }
     }, [locName])
 
     {/* // Update viewState and map when currentLocation changes
